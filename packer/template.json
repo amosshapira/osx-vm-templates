@@ -34,7 +34,7 @@
       "iso_checksum_type": "none",
       "iso_url": "{{user `iso_url`}}",
       "shutdown_command": "echo '{{user `username`}}'|sudo -S shutdown -h now",
-      "skip_compaction": true,
+      "skip_compaction": false,
       "ssh_port": 22,
       "ssh_username": "{{user `username`}}",
       "ssh_password": "{{user `password`}}",
@@ -73,13 +73,13 @@
         ["modifyvm", "{{.Name}}", "--audiocontroller", "hda"],
         ["modifyvm", "{{.Name}}", "--boot1", "dvd"],
         ["modifyvm", "{{.Name}}", "--boot2", "disk"],
-        ["modifyvm", "{{.Name}}", "--chipset", "ich9"],
+        ["modifyvm", "{{.Name}}", "--chipset", "piix3"],
         ["modifyvm", "{{.Name}}", "--firmware", "efi"],
         ["modifyvm", "{{.Name}}", "--hpet", "on"],
         ["modifyvm", "{{.Name}}", "--keyboard", "usb"],
-        ["modifyvm", "{{.Name}}", "--memory", "2048"],
+        ["modifyvm", "{{.Name}}", "--memory", "4096"],
         ["modifyvm", "{{.Name}}", "--mouse", "usbtablet"],
-        ["modifyvm", "{{.Name}}", "--usbehci", "on"],
+        ["modifyvm", "{{.Name}}", "--usb", "on"],
         ["modifyvm", "{{.Name}}", "--vram", "128"],
         ["storagectl", "{{.Name}}", "--name", "IDE Controller", "--remove"]
       ]
@@ -95,8 +95,18 @@
       "command": "sleep {{user `provisioning_delay`}}"
     },
     {
+      "type": "file",
+      "destination": "/private/tmp/homebrew.tar.gz",
+      "source": "/private/tmp/homebrew.tar.gz"
+    },
+    {
       "destination": "/private/tmp/set_kcpassword.py",
       "source": "../scripts/support/set_kcpassword.py",
+      "type": "file"
+    },
+    {
+      "destination": "/private/tmp/homebrew-install",
+      "source": "../scripts/support/homebrew-install",
       "type": "file"
     },
     {
@@ -106,6 +116,7 @@
         "../scripts/vmware.sh",
         "../scripts/parallels.sh",
         "../scripts/xcode-cli-tools.sh",
+        "../scripts/covata.sh",
         "../scripts/chef-omnibus.sh",
         "../scripts/puppet.sh",
         "../scripts/add-network-interface-detection.sh",
@@ -132,14 +143,14 @@
   "variables": {
     "autologin": "false",
     "chef_version": "none",
-    "facter_version": "none",
-    "hiera_version": "none",
+    "facter_version": "latest",
+    "hiera_version": "latest",
     "install_vagrant_keys": "true",
     "install_xcode_cli_tools": "true",
-    "iso_url": "OSX_InstallESD_10.11.1_15B42.dmg",
+    "iso_url": "OSX_InstallESD_10.11.3_15D21.dmg",
     "password": "vagrant",
     "provisioning_delay": "0",
-    "puppet_version": "none",
+    "puppet_version": "latest",
     "update_system": "true",
     "username": "vagrant"
   }
