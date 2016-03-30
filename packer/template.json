@@ -44,7 +44,7 @@
       "vmx_data": {
         "cpuid.coresPerSocket": "1",
         "memsize": "2048",
-        "numvcpus": "1",
+        "numvcpus": "2",
         "firmware": "efi",
         "keyboardAndMouseProfile": "macProfile",
         "smc.present": "TRUE",
@@ -95,18 +95,12 @@
       "command": "sleep {{user `provisioning_delay`}}"
     },
     {
-      "type": "file",
-      "destination": "/private/tmp/homebrew.tar.gz",
-      "source": "/private/tmp/homebrew.tar.gz"
+      "type": "shell",
+      "inline": "/usr/bin/sudo /sbin/ifconfig en0 mtu {{user `mtu`}}"
     },
     {
       "destination": "/private/tmp/set_kcpassword.py",
       "source": "../scripts/support/set_kcpassword.py",
-      "type": "file"
-    },
-    {
-      "destination": "/private/tmp/homebrew-install",
-      "source": "../scripts/support/homebrew-install",
       "type": "file"
     },
     {
@@ -152,6 +146,7 @@
     "provisioning_delay": "0",
     "puppet_version": "latest",
     "update_system": "true",
-    "username": "vagrant"
+    "username": "vagrant",
+    "mtu": "1450"
   }
 }
