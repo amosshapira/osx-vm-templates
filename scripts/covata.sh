@@ -1,11 +1,4 @@
-#!/bin/sh -vx
-#date > /etc/box_build_time
-#OSX_VERS=$(sw_vers -productVersion | awk -F "." '{print $2}')
-
-# Set computer/hostname
-#COMPNAME=osx-10_${OSX_VERS}
-#scutil --set ComputerName ${COMPNAME}
-#scutil --set HostName ${COMPNAME}.build.covata.com
+#!/bin/sh
 
 # Install the covata_dc public key on the root user's ssh
 PATH=/usr/local/bin:$PATH
@@ -28,18 +21,29 @@ dscl . -create /Users/homebrew PrimaryGroupID 20
 dscl . -create /Users/homebrew NFSHomeDirectory /Users/homebrew
 dscl . -create /Users/homebrew UserShell /bin/bash
 dscl . -create /Users/homebrew RealName "Hombrew"
-dscl . -passwd /Users/homebrew $(/usr/bin/openssl rand -base64 30) # TODO: set to something uncrackable, preferably invalid
+dscl . -passwd /Users/homebrew "$(/usr/bin/openssl rand -base64 30)" # TODO: set to something invalid
+dseditgroup -o edit -a homebrew admin
 mkdir -p /Users/homebrew
 chown -R homebrew:staff /Users/homebrew
 
-# Install HomeBrew (can't install as root, so we use user "vagrant" for now)
-#sudo -u vagrant GIT_CURL_VERBOSE=1 GIT_TRACE=1 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-chmod 0755 /private/tmp/homebrew-install
-sudo -u vagrant /private/tmp/homebrew-install
+# allow %admin to sudo without a tty
+/usr/bin/perl -pi -e '/^Defaults/ and $insert != 1 and print "Defaults:%admin !requiretty\n" and $insert=1' /etc/sudoers
 
-# Install gnupg
-sudo -u vagrant brew install gnupg
+# Allow user 'homebrew' to sudo without a password just for now:
+echo 'homebrew ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+
+# Install HomeBrew (can't install as root, so we use user "homebrew")
+# I find the following more wieldy to debug:
+curl -fsSL -o homebrew-install https://raw.githubusercontent.com/Homebrew/install/master/install
+chmod +x homebrew-install
+sudo -u homebrew ./homebrew-install
+
+# Remove hombrew password-less sudo privilege
+sed -i '' -e '/^homebrew ALL=/d' /etc/sudoers
+
+sudo -u homebrew brew install gnupg
 
 # Install hiera-eyaml and dependencies
 # We need Xcode CLI tools installed (for ruby.h)
-gem install --no-ri --no-rdoc hiera hiera-eyaml hiera-eyaml-gpg gpgme
+# so this must come after scripts/xcode-cli-tools.sh
+gem install --no-ri --no-rdoc hiera hiera-eyaml hiera-eyaml-gpg gpgme pbkdf2-ruby
