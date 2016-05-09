@@ -1,3 +1,4 @@
+#!/bin/bash
 if [ "$AUTOLOGIN" != "true" ] && [ "$AUTOLOGIN" != "1" ]; then
   exit
 fi

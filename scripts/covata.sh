@@ -38,12 +38,12 @@ curl -fsSL -o homebrew-install https://raw.githubusercontent.com/Homebrew/instal
 chmod +x homebrew-install
 sudo -u homebrew ./homebrew-install
 
-# Remove hombrew password-less sudo privilege
-sed -i '' -e '/^homebrew ALL=/d' /etc/sudoers
+sudo -u homebrew brew install gnupg augeas
 
-sudo -u homebrew brew install gnupg
+# Remove hombrew password-less sudo privileges
+sed -i '' -e '/^homebrew ALL=/d' /etc/sudoers
 
 # Install hiera-eyaml and dependencies
 # We need Xcode CLI tools installed (for ruby.h)
 # so this must come after scripts/xcode-cli-tools.sh
-gem install --no-ri --no-rdoc hiera hiera-eyaml hiera-eyaml-gpg gpgme pbkdf2-ruby
+gem install --no-ri --no-rdoc hiera hiera-eyaml hiera-eyaml-gpg gpgme pbkdf2-ruby ruby-augeas

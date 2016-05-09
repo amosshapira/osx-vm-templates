@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -xv
 
 # Install the specified version of Puppet and tools
 #

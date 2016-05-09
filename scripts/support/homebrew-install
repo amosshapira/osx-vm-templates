@@ -5,6 +5,7 @@
 HOMEBREW_PREFIX = '/usr/local'
 HOMEBREW_CACHE = '/Library/Caches/Homebrew'
 HOMEBREW_REPO = 'https://github.com/Homebrew/homebrew'
+#HOMEBREW_REPO = 'git://github.com/Homebrew/homebrew'
 
 module Tty extend self
   def blue; bold 34; end
